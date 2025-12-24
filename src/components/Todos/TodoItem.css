@@ -1,0 +1,20 @@
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.todo-item.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.todo-item-label {
+  cursor: pointer;
+}
+
+.delete-btn{
+    border:none;
+    background-color: transparent;
+    cursor: pointer;
+}
