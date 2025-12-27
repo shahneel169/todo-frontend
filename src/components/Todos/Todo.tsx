@@ -1,47 +1,43 @@
 import { useState } from "react";
-import type { TodoItemType } from "../../types/todo";
 import { toast } from "react-toastify";
+import useTodos from "../../hooks/useTodos";
 import TodoItem from "./TodoItem";
+import { sortedTodos } from "../../helper";
+import type { TodoUpdateRequest } from "../../types/todo";
 import "./Todo.css";
-import { isDuplicateTitle, sortedTodos } from "../../helper";
 
 const Todo = () => {
-  const [todos, setTodos] = useState<TodoItemType[]>([]);
+  const { todos, addTodo, updateTodo, removeTodo } = useTodos();
   const [title, setTitle] = useState<string>("");
 
   const handleAddTodo = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (title && !isDuplicateTitle(todos, title)) {
-      const newTodo: TodoItemType = {
-        id: Date.now(),
-        title,
-        completed: false,
-        dueDate: "",
-      };
-      setTodos([...todos, newTodo]);
-      setTitle("");
-
-      // toast.success("Todo added successfully");
-    } else {
-      toast.error("Todo already exists");
+    if (title) {
+      try {
+        addTodo(title);
+        setTitle("");
+        toast.success("Todo added successfully");
+      } catch (error) {
+        toast.error("Failed to add todo");
+      }
     }
   };
 
-  const handleToggleTodo = (id: number, completed: boolean) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) => (todo.id === id ? { ...todo, completed } : todo))
-    );
-  };
-
-  const handleDueDateChange = (id: number, dueDate: string) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) => (todo.id === id ? { ...todo, dueDate } : todo))
-    );
+  const handleUpdateTodo = (id: number, todo: TodoUpdateRequest) => {
+    try {
+      updateTodo(id, todo);
+    } catch (error) {
+      toast.error("Failed to update todo");
+    }
   };
 
   const handleDeleteTodo = (id: number) => {
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-    toast.success("Todo deleted successfully");
+    try {
+      removeTodo(id);
+      toast.success("Todo deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete todo");
+    }
   };
 
   return (
@@ -64,8 +60,7 @@ const Todo = () => {
           <TodoItem
             key={todo.id}
             todo={todo}
-            onToggle={handleToggleTodo}
-            onDueDateChange={handleDueDateChange}
+            handleUpdateTodo={handleUpdateTodo}
             handleDeleteTodo={handleDeleteTodo}
           />
         ))}
