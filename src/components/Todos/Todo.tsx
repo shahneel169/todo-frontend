@@ -10,11 +10,11 @@ const Todo = () => {
   const { todos, addTodo, updateTodo, removeTodo } = useTodos();
   const [title, setTitle] = useState<string>("");
 
-  const handleAddTodo = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddTodo = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (title) {
       try {
-        addTodo(title);
+        await addTodo(title);
         setTitle("");
         toast.success("Todo added successfully");
       } catch (error) {
@@ -23,17 +23,17 @@ const Todo = () => {
     }
   };
 
-  const handleUpdateTodo = (id: number, todo: TodoUpdateRequest) => {
+  const handleUpdateTodo = async (id: number, todo: TodoUpdateRequest) => {
     try {
-      updateTodo(id, todo);
+      await updateTodo(id, todo);
     } catch (error) {
       toast.error("Failed to update todo");
     }
   };
 
-  const handleDeleteTodo = (id: number) => {
+  const handleDeleteTodo = async (id: number) => {
     try {
-      removeTodo(id);
+      await removeTodo(id);
       toast.success("Todo deleted successfully");
     } catch (error) {
       toast.error("Failed to delete todo");
