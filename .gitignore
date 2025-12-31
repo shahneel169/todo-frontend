@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .env
+
+# Coverage files
+coverage/
+.nyc_output/
